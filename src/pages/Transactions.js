@@ -20,7 +20,7 @@ const Transactions = () => {
   };
 
   const fetchTransactions = async (page = 0, rowsPerPage = 10) => {
-    const response = await axios.get("http://localhost:5000/api/transactions", {
+    const response = await axios.get("https://dashboard-backend-40fh.onrender.com/api/transactions", {
       params: { page: page + 1, limit: rowsPerPage },
     });
 

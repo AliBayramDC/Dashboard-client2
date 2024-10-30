@@ -12,11 +12,11 @@ const Transactions = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toISOString().slice(0, 10); // Format as 'YYYY-MM-DD'
+    return date.toISOString().slice(0, 10);
   };
 
   const formatTransactionId = (id) => {
-    return Number(id).toString(); // Remove decimal points
+    return Number(id).toString(); 
   };
 
   const fetchTransactions = async (page = 0, rowsPerPage = 10) => {
@@ -26,8 +26,8 @@ const Transactions = () => {
 
     const formattedTransactions = response.data.transactions.map(transaction => ({
       ...transaction,
-      Date: formatDate(transaction.Date), // Format the Date field
-      transaction_id: formatTransactionId(transaction.transaction_id) // Format the transaction_id field
+      Date: formatDate(transaction.Date), 
+      transaction_id: formatTransactionId(transaction.transaction_id) 
     }));
 
     setTransactions(formattedTransactions);

@@ -8,12 +8,12 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../components/Header";
 import StatBox from "../../components/StatBox";
-import FilterComponent from "../../components/FilterComponent"; // Adjust the import path if necessary
-import transactions from "../../data/transactions.json"; // Adjust the import path if necessary
-import { jStat } from "jstat"; // Make sure to install jstat library
-import { standardDeviation, mean } from "simple-statistics"; // Make sure to install simple-statistics library
-import TableComponent from "../../components/TableComponent"; // Adjust the import path if necessary
-import ABCPieTable from "../../components/ABCPieTable"; // Adjust the import path if necessary
+import FilterComponent from "../../components/FilterComponent";
+import transactions from "../../data/transactions.json";
+import { jStat } from "jstat";
+import { standardDeviation, mean } from "simple-statistics";
+import TableComponent from "../../components/TableComponent";
+import ABCPieTable from "../../components/ABCPieTable";
 
 const averageInventoryData = {
   Product1: 43.4,
@@ -27,7 +27,6 @@ const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  // Set default filters
   const defaultYear = [2023];
   const defaultProducts = [
     ...new Set(transactions.map((item) => item.ProductName)),
@@ -59,11 +58,9 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    // Precompute ABC categories based on selected years
     const selectedYears = filters.Year;
     let totalSales = 0;
 
-    // Calculate total sales for the selected years
     transactions.forEach((transaction) => {
       const transactionYear = new Date(transaction.Date).getFullYear();
       if (
@@ -74,7 +71,6 @@ const Dashboard = () => {
       }
     });
 
-    // Calculate the percentage of total sales for each product
     let productSalesData = transactions.reduce((acc, transaction) => {
       const transactionYear = new Date(transaction.Date).getFullYear();
       if (
@@ -98,10 +94,8 @@ const Dashboard = () => {
       })
     );
 
-    // Sort products by sales percentage in descending order
     productSalesData.sort((a, b) => b.percentage - a.percentage);
 
-    // Calculate cumulative percentages starting from the second highest
     let cumulativePercentage = 0;
     productSalesData.forEach((item, index) => {
       if (index > 0) {
@@ -112,7 +106,6 @@ const Dashboard = () => {
       }
     });
 
-    // Determine ABC category based on cumulative percentages
     const abcCategories = {};
     productSalesData.forEach((item) => {
       if (item.cumulativePercentage < 40) {
@@ -131,7 +124,6 @@ const Dashboard = () => {
   }, [filters.Year]);
 
   useEffect(() => {
-    // Generate table data based on selected products
     const selectedProducts = filters.Product;
     const data = selectedProducts.map((product) => {
       const productTransactions = transactions.filter((transaction) => {
@@ -169,14 +161,12 @@ const Dashboard = () => {
       };
     });
 
-    // Sort data by sales in descending order
     data.sort((a, b) => b.sale - a.sale);
 
     setTableData(data);
   }, [filters, abcCategories]);
 
   useEffect(() => {
-    // Calculate Average Inventory
     const selectedProducts = filters.Product;
     let totalAverage = 0;
 
@@ -186,7 +176,6 @@ const Dashboard = () => {
 
     setAverageInventory(totalAverage);
 
-    // Calculate total COGS, Net Sales, and Quantity Sold based on selected Year and Product
     const selectedYears = filters.Year;
     let cogsSum = 0;
     let salesSum = 0;
@@ -222,26 +211,21 @@ const Dashboard = () => {
     setTotalCOGS(cogsSum);
     setNetSales(salesSum);
 
-    // Calculate Inventory Turnover
     const turnover = totalAverage > 0 ? cogsSum / totalAverage : 0;
     setInventoryTurnover(turnover);
 
-    // Calculate Gross Margin
     const margin = salesSum > 0 ? ((salesSum - cogsSum) / salesSum) * 100 : 0;
     setGrossMargin(margin);
 
-    // Calculate Return on Inventory
     const roi =
       totalAverage > 0 ? (salesSum / totalAverage) * (margin / 100) : 0;
     setReturnOnInventory(roi);
 
-    // Calculate Preferred Inventory
     const avgDailyQuantitySold =
       totalDays > 0 ? totalQuantitySold / totalDays : 0;
     const preferredInventoryValue = avgDailyQuantitySold * daysOfStock;
     setPreferredInventory(preferredInventoryValue);
 
-    // Calculate Safety Stock
     const standardDeviation = jStat.stdev(quantities);
     const safetyStockValue =
       jStat.normal.inv(normSInvValue, 0, 1) *
@@ -249,7 +233,6 @@ const Dashboard = () => {
       Math.sqrt(daysOfStock);
     setSafetyStock(safetyStockValue);
 
-    // Calculate Your Save
     const avgCostPrice =
       totalQuantitySold > 0 ? costPriceSum / totalQuantitySold : 0;
     const yourSaveValue =
@@ -266,7 +249,6 @@ const Dashboard = () => {
 
   return (
     <Box ml="5px" width="100%">
-      {/* HEADER */}
       <Box
         display="flex"
         justifyContent="space-between"
@@ -276,7 +258,6 @@ const Dashboard = () => {
         <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
       </Box>
 
-      {/* GRID & CHARTS */}
       <Box
         display="grid"
         gridTemplateColumns="repeat(16, 1fr)"
@@ -284,7 +265,6 @@ const Dashboard = () => {
         gridAutoRows="100px"
         gap="8.7px"
       >
-        {/* ROW 1 */}
         <Box
           gridColumn="span 12"
           backgroundColor={colors.primary[400]}
@@ -339,13 +319,13 @@ const Dashboard = () => {
                 },
               },
               "& .MuiInputLabel-root": {
-                fontWeight: "500", // Set label to medium weight
+                fontWeight: "500", 
                 color: "#003A7D",
               },
               "& .MuiInputBase-input": {
                 fontWeight: "bold",
                 fontSize: '1.5rem',
-                color:'#003A7D' // Set input text to bold
+                color:'#003A7D' 
               },
             }}
           />
@@ -391,19 +371,18 @@ const Dashboard = () => {
                 },
               },
               "& .MuiInputLabel-root": {
-                fontWeight: "500", // Set label to medium weight
+                fontWeight: "500", 
                 color: "#003A7D",
               },
               "& .MuiInputBase-input": {
                 fontWeight: "bold",
                 fontSize: "1.5rem",
-                color: '#003A7D' // Set input text to bold
+                color: '#003A7D' 
               },
             }}
           />
         </Box>
 
-        {/* ROW 2 */}
         <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
@@ -539,7 +518,7 @@ const Dashboard = () => {
             }
           />
         </Box>
-        {/* ROW 3 */}
+
         <Box
           gridColumn="span 3"
           backgroundColor={colors.primary[400]}
@@ -679,14 +658,13 @@ const Dashboard = () => {
             }
           />
         </Box>
-        {/* ABCPieTable Component */}
+
         <Box
           gridColumn="span 8"
           sx={{ boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)" }}
         >
           <ABCPieTable data={filteredTableData} />
         </Box>
-        {/* Table Component */}
         <Box
           gridColumn="span 8"
           sx={{ boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.1)" }}
